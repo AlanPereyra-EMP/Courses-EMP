@@ -26,7 +26,7 @@ function emp_courses_init() {
 		'show_ui'            => true,
 		'show_in_menu'       => true,
 		'query_var'          => true,
-		'rewrite'            => array( 'slug' => 'courses' ),
+		'rewrite'            => array( 'slug' => 'emp_courses' ),
 		'capability_type'    => 'post',
 		'has_archive'        => true,
 		'hierarchical'       => false,
@@ -36,7 +36,7 @@ function emp_courses_init() {
 		'supports'           => array( 'title', 'editor', 'thumbnail', 'excerpt', 'custom-fields', 'categories', 'duplicate')
 	);
 
-	register_post_type( 'courses', $args );
+	register_post_type( 'emp_courses', $args );
 
 }
 // if ( current_user_can( 'edit_pages' ) ) {
