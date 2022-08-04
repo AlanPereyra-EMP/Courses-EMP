@@ -148,3 +148,6 @@
   width: 300px;
   object-fit: cover;
 }
+#respond small{
+  display: block;
+}
