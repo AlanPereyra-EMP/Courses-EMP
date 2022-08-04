@@ -125,16 +125,16 @@
   color: var(--emp-content-bg);
   padding: 100px 0;
 }
+#course-content .autor-title{
+  font-size: 40px;
+  margin: 50px 0;
+  text-align: center;
+}
 #course-content .autor .content-template{
   display: grid;
   grid-template-columns: 100%;
   margin: auto;
   max-width: 1200px;
-}
-@media (min-width: 992px) {
-  #course-content .autor .content-template{
-    grid-template-columns: 50% 50%;
-  }
 }
 #course-content .autor .align-text{
   display: block;
