@@ -173,40 +173,11 @@ function emp_save_courses_metabox($post_id, $post){
 
 add_action('save_post', 'emp_save_courses_metabox', 1, 2);
 
-// Add column on lessons post type
-function emp_add_lessons_columns($columns){
-  $new_columns['cb'] = '<input type="checkbox" />';
-
-  $new_columns['title'] = _x('Title', 'Curso', 'courses_emp');
-
-  $new_columns['emp_courses'] = __('Curso', 'courses_emp');
-
-  return $new_columns;
-}
-
-add_filter('manage_edit-lessons_columns', 'emp_add_lessons_columns');
-
-function emp_fill_lessons_columns($column_name, $id) {
-  global $wpdb;
-  switch ($column_name) {
-    case 'emp_courses':
-    $courses_id = get_post_meta($id, 'emp_lessons_courses', true);
-    $courses = get_post($courses_id);
-    $permalink = get_permalink($courses_id);
-    echo "<a href='" . $permalink . "'>" . $courses->post_title . "</a>";
-    break;
-    default:
-    break;
-  }
-}
-
-add_action('manage_lessons_posts_custom_column', 'emp_fill_lessons_columns', 10, 2);
-
-// Create a custom field to select a parent course
-function emp_add_teachers_metabox(){
+// Create a custom field to select a teacher's course
+function emp_add_teachers_courses_metabox(){
   add_meta_box(
     'lessons_teachers',
-    __('Profesor', 'courses_emp'),
+    __('Profesor', 'teachers_emp'),
     'emp_lessons_teachers_metabox',
     'lessons',
     'side',
@@ -214,13 +185,13 @@ function emp_add_teachers_metabox(){
     array( 'id' => 'emp_teachers')
   );
 }
-add_action('admin_init', 'emp_add_teachers_metabox');
+add_action('admin_init', 'emp_add_teachers_courses_metabox');
 
 function emp_lessons_teachers_metabox($post, $args){
   wp_nonce_field( plugin_basename( __FILE__ ), 'emp_lessons_teachers_nonce' );
   $teachers_id = get_post_meta($post->ID, 'emp_lessons_teachers', true);
 
-  echo "<p>Selecciona el profesor que presenta este curso</p>";
+  echo "<p>Selecciona el profesor que presenta esta lección</p>";
   echo "<select id='emp_lessons_teachers' name='emp_lessons_teachers'>";
 
   // Get teachers
@@ -261,18 +232,89 @@ function emp_save_teachers_metabox($post_id, $post){
 
 add_action('save_post', 'emp_save_teachers_metabox', 1, 2);
 
-// Add column on lessons post type
-function emp_add_lessons_teachers_columns($columns){
-  $new_teacher_columns['cb'] = '<input type="checkbox" />';
+if (has_bought_items()) {
+  // Add column on lessons post type
+  function emp_add_lessons_a_columns($columns){
+    $new_columns['cb'] = '<input type="checkbox" />';
 
-  $new_teacher_columns['title'] = _x('Title', 'Profesor', 'courses_emp');
+    $new_columns['title'] = _x('Titulo', 'Curso', 'teachers_emp');
 
-  $new_teacher_columns['emp_teachers'] = __('Profesor', 'courses_emp');
+    $new_columns['emp_teachers'] = __('Profesor', 'teachers_emp');
 
-  return $new_teacher_columns;
+    $new_columns['emp_courses'] = __('Curso', 'courses_emp');
+
+    return $new_columns;
+  }
+}else {
+  // Add column on lessons post type
+  function emp_add_lessons_a_columns($columns){
+    $new_columns['cb'] = '<input type="checkbox" />';
+
+    $new_columns['title'] = _x('Titulo', 'Curso', 'teachers_emp');
+
+    $new_columns['emp_teachers'] = __('Profesor', 'teachers_emp');
+
+    $new_columns['emp_courses'] = __('Curso', 'courses_emp');
+
+    return $new_columns;
+  }
 }
 
-add_filter('manage_edit-lessons_teachers_columns', 'emp_add_lessons_teachers_columns');
+function has_bought_items() {
+  $bought = false;
+
+  // Set HERE ine the array your specific target product IDs
+  $prod_arr = array( '21', '67' );
+
+  // Get all customer orders
+  $customer_orders = get_posts( array(
+    'numberposts' => -1,
+    'meta_key'    => '_customer_user',
+    'meta_value'  => get_current_user_id(),
+    'post_type'   => 'shop_order', // WC orders post type
+    'post_status' => 'wc-completed' // Only orders with status "completed"
+  ) );
+  foreach ( $customer_orders as $customer_order ) {
+    // Updated compatibility with WooCommerce 3+
+    $order_id = method_exists( $order, 'get_id' ) ? $order->get_id() : $order->id;
+    $order = wc_get_order( $customer_order );
+
+    // Iterating through each current customer products bought in the order
+    foreach ($order->get_items() as $item) {
+      // WC 3+ compatibility
+      if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
+        $product_id = $item['product_id'];
+      }else{
+        $product_id = $item->get_product_id();
+      }
+
+      // Your condition related to your 2 specific products Ids
+      if ( in_array( $product_id, $prod_arr ) ){
+        $bought = true;
+      }
+    }
+  }
+  // return "true" if one the specifics products have been bought before by customer
+  return $bought;
+}
+
+add_filter('manage_edit-lessons_columns', 'emp_add_lessons_a_columns');
+
+function emp_fill_lessons_courses_columns($column_name, $id) {
+  global $wpdb;
+  switch ($column_name) {
+    case 'emp_courses':
+    $courses_id = get_post_meta($id, 'emp_lessons_courses', true);
+    $courses = get_post($courses_id);
+    $permalink = get_permalink($courses_id);
+    echo "<a href='" . $permalink . "'>" . $courses->post_title . "</a>";
+    break;
+    default:
+    break;
+  }
+}
+
+add_action('manage_lessons_posts_custom_column', 'emp_fill_lessons_courses_columns', 10, 2);
 
 function emp_fill_lessons_teachers_columns($column_name, $id) {
   global $wpdb;
@@ -288,5 +330,5 @@ function emp_fill_lessons_teachers_columns($column_name, $id) {
   }
 }
 
-add_action('manage_lessons_teachers_posts_custom_column', 'emp_fill_lessons_teachers_columns', 10, 2);
+add_action('manage_lessons_posts_custom_column', 'emp_fill_lessons_teachers_columns', 10, 2);
 ?>

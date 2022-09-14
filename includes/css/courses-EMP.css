@@ -151,3 +151,8 @@
 #respond small{
   display: block;
 }
+section.course .card-text.p-3 {
+  height: 150px;
+  margin-bottom: 20px;
+  overflow: auto;
+}
