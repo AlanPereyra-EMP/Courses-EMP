@@ -20,18 +20,8 @@
     aspect-ratio: 16/9;
   }
 }
-#lesson-video{
-  position: sticky;
-  top: 100px;
-}
-#lesson-content .comments {
-  background: var(--emp-content-color);
-  color: var(--emp-content-bg);
-  padding: 100px 0;
-  text-align: center;
-}
-#lesson-content .comments h2 {
-  font-size: 50px;
+#lesson-video iframe{
+  background: #000000;
 }
 #course-intro h2, #teacher-intro h2{
   font-size: 40px;
@@ -50,7 +40,11 @@
 }
 #course-topics{
   font-size: 25px;
-	margin: 30px auto;
+	margin-top: 30px
+}
+#course-topics .mh-70-vh{
+  max-height: 70vh;
+  overflow: auto;
 }
 #course-topics .module {
   background: rgba(200,200,200,0.3);
@@ -106,6 +100,14 @@
 	margin-top: -10px;
 	text-align: right;
 }
+#topic-height::-webkit-scrollbar{
+  display: none;
+}
+@media (max-width:991px) {
+  #topic-height{
+    max-height: none!important;
+  }
+}
 #course-icons{
 	font-size: 22px;
 }
@@ -139,6 +141,9 @@
 #course-content .autor .align-text{
   display: block;
   margin: auto;
+}
+div#lesson-content {
+  padding-top: 1px;
 }
 .autor-img{
   aspect-ratio: 1;

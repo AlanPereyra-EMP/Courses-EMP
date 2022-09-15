@@ -16,3 +16,11 @@ function dropdown(){
     icon.classList.add('rotated');
   }
 }
+
+var videoEmp = document.getElementById('courses-emp-lesson-video');
+if(videoEmp){
+  var topics = document.getElementById('topic-height');
+  var height = videoEmp.offsetHeight;
+  topics.style.maxHeight = (height-20)+'px';
+  topics.classList.add('overflow-auto', 'border-30px');
+}
