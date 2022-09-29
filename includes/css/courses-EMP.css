@@ -109,7 +109,6 @@
   }
 }
 #course-icons{
-  display: flex;
   font-size: 22px;
   justify-content: space-around;
 }
