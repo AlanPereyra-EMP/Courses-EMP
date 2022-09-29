@@ -177,7 +177,7 @@ function emp_lessons_position_metabox($post) {
 
   // Container out
   echo '<div class="container out">
-  <h3>No inluidas aún:</h3>';
+  <h3>No incluidas aún:</h3>';
   foreach( $list_posts as $post ) {
     if (!in_array($post->ID, $lessons_position)) {
       echo "<input readonly class='draggable' draggable='true' data-id='".$post->ID."' data-draggable-order='' value='".$post->post_title." '/>";
