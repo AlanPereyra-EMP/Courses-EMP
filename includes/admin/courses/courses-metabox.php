@@ -166,7 +166,7 @@ function emp_lessons_position_metabox($post) {
 
   // Container in
   echo '<div id="list" class="container in">
-  <h3>Inludas en el temario:</h3>';
+  <h3>Incluidas en el temario:</h3>';
   foreach( $lessons_position as $lesson_id) {
     if($lesson_id){
       $lesson_title = get_the_title($lesson_id);
