@@ -1,70 +1,11 @@
 <?php
-// Create a custom field to select a teacher's course
-function emp_add_teachers_courses_metabox(){
-  add_meta_box(
-    'lessons_teachers',
-    __('Profesor', 'teachers_emp'),
-    'emp_lessons_teachers_metabox',
-    'lessons',
-    'side',
-    'default',
-    array( 'id' => 'emp_teachers')
-  );
-}
-add_action('admin_init', 'emp_add_teachers_courses_metabox');
-
-function emp_lessons_teachers_metabox($post, $args){
-  wp_nonce_field( plugin_basename( __FILE__ ), 'emp_lessons_teachers_nonce' );
-  $teachers_id = get_post_meta($post->ID, 'emp_lessons_teachers', true);
-
-  echo "<p>Selecciona el profesor que presenta esta lección</p>";
-  echo "<select id='emp_lessons_teachers' name='emp_lessons_teachers'>";
-
-  // Get teachers
-  $query = new WP_Query( 'post_type=teachers' );
-  while ( $query->have_posts() ) {
-    $query->the_post();
-    $id = get_the_ID();
-    $selected = "";
-
-    if($id == $teachers_id){
-      $selected = ' selected="selected"';
-    }
-    echo '<option' . $selected . ' value=' . $id . '>' . get_the_title() . '</option>';
-  }
-  echo "</select>";
-}
-
-// Save course selected
-function emp_save_teachers_metabox($post_id, $post){
-  // Check if autosave is not working
-  if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE )
-  return;
-  if ( !isset( $_POST['emp_lessons_teachers_nonce'] ) )
-  return;
-  if ( !wp_verify_nonce( $_POST['emp_lessons_teachers_nonce'], plugin_basename( __FILE__ ) ) )
-  return;
-
-  // We do want to save? Ok!
-  $key = 'emp_lessons_teachers';
-  $value = $_POST["emp_lessons_teachers"];
-  if ( get_post_meta( $post->ID, $key, FALSE ) ) { // If the custom field already has a value
-    update_post_meta( $post->ID, $key, $value );
-  } else { // If the custom field doesn't have a value
-    add_post_meta( $post->ID, $key, $value );
-  }
-  if ( !$value ) delete_post_meta( $post->ID, $key ); // Delete if blank
-}
-
-add_action('save_post', 'emp_save_teachers_metabox', 1, 2);
-
 function emp_add_lesson_video_metabox(){
   add_meta_box(
     'lessons_video',
     __('Video', 'courses_emp'),
     'emp_lessons_video_metabox',
     'lessons',
-    'normal',
+    'side',
     'default',
     array( 'id' => 'emp_video')
   );
@@ -72,40 +13,49 @@ function emp_add_lesson_video_metabox(){
 add_action("admin_init", "emp_add_lesson_video_metabox");
 
 function emp_lessons_video_metabox($post, $args){
-  // This is the value that was saved in the save_amenities function
-  $lesson_video = get_post_meta( $post->ID, '_lesson_video', true );
+  $post_id = null;
+  if ( isset( $_GET['post'] ) ) {
+    $post_id = intval( $_GET['post'] );
+  } elseif ( isset( $_POST['post_ID'] ) ) {
+    $post_id = intval( $_POST['post_ID'] );
+  }
 
-  wp_nonce_field( 'save_video', 'lesson_video_nonce' );
+  // This is the value that was saved in the save_amenities function
+  wp_nonce_field( plugin_basename( __FILE__ ), 'lesson_video_nonce' );
+  $lesson_video = get_post_meta( $post_id, '_lesson_video', true );
+
 
   echo '<label>Pegá el link del video de esta lección:</label><br>';
-  echo '<input style="width:100%;" type="text" name="lesson_video" value="' . sanitize_text_field( $lesson_video ) . '" />';
+  echo '<input style="width:100%;" type="text" id="lesson_video" name="lesson_video" value="' . $lesson_video . '" />';
+
 }
 
 function emp_save_video_metabox($post_id){
-  // Check if nonce is set
-  if ( ! isset( $_POST['lesson_video_nonce'] ) ) {
-    return $post_id;
-  }
+  // Check if autosave is not working
+  if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE )
+  return;
+  if ( !isset( $_POST['lesson_video_nonce'] ) )
+  return;
+  if ( !wp_verify_nonce( $_POST['lesson_video_nonce'], plugin_basename( __FILE__ ) ) )
+  return;
 
-  if ( ! wp_verify_nonce( $_POST['lesson_video_nonce'], 'save_video' ) ) {
-    return $post_id;
-  }
+  $key = '_lesson_video';
+  $value = $_POST['lesson_video'];
 
-  // Check that the logged in user has permission to edit this post
-  if ( ! current_user_can( 'edit_post' ) ) {
-    return $post_id;
+  if ( get_post_meta( $post_id, $key, FALSE ) ) { // If the custom field already has a value
+    update_post_meta( $post_id, $key, $value );
+  } else { // If the custom field doesn't have a value
+    add_post_meta( $post_id, $key, $value );
   }
-
-  $bed_room = sanitize_text_field( $_POST['lesson_video'] );
-  update_post_meta( $post_id, '_lesson_video', $bed_room );
+  if ( !$value ) delete_post_meta( $post_id, $key ); // Delete if blank
 }
 add_action('save_post', 'emp_save_video_metabox', 1, 2);
 
 function emp_fill_lessons_courses_columns($column_name, $id) {
   global $wpdb;
   switch ($column_name) {
-    case 'emp_courses':
-    $courses_id = get_post_meta($id, 'emp_lessons_courses', true);
+    case 'emp_course':
+    $courses_id = get_post_meta($id, '_lessons_course', true);
     $courses = get_post($courses_id);
     $permalink = get_permalink($courses_id);
     echo "<a href='" . $permalink . "'>" . $courses->post_title . "</a>";
@@ -115,35 +65,94 @@ function emp_fill_lessons_courses_columns($column_name, $id) {
   }
 }
 add_action('manage_lessons_posts_custom_column', 'emp_fill_lessons_courses_columns', 10, 2);
+//
+// function emp_fill_lessons_teachers_columns($column_name, $id) {
+//   global $wpdb;
+//   switch ($column_name) {
+//     case 'emp_teachers':
+//     $teachers_id = get_post_meta($id, 'emp_lessons_teachers', true);
+//     $teachers = get_post($teachers_id);
+//     $permalink = get_permalink($teachers_id);
+//     echo "<a href='" . $permalink . "'>" . $teachers->post_title . "</a>";
+//     break;
+//     default:
+//     break;
+//   }
+// }
 
-function emp_fill_lessons_teachers_columns($column_name, $id) {
-  global $wpdb;
-  switch ($column_name) {
-    case 'emp_teachers':
-    $teachers_id = get_post_meta($id, 'emp_lessons_teachers', true);
-    $teachers = get_post($teachers_id);
-    $permalink = get_permalink($teachers_id);
-    echo "<a href='" . $permalink . "'>" . $teachers->post_title . "</a>";
-    break;
-    default:
-    break;
-  }
-}
-
-add_action('manage_lessons_posts_custom_column', 'emp_fill_lessons_teachers_columns', 10, 2);
+// add_action('manage_lessons_posts_custom_column', 'emp_fill_lessons_teachers_columns', 10, 2);
 
 // Add column on lessons post type
 function emp_add_lessons_a_columns($columns){
   $new_columns['cb'] = '<input type="checkbox" />';
 
-  $new_columns['title'] = _x('Titulo', 'Curso', 'teachers_emp');
+  $new_columns['title'] = _x('Titulo', 'Curso', 'courses_emp');
 
-  $new_columns['emp_teachers'] = __('Profesor', 'teachers_emp');
-
-  $new_columns['emp_courses'] = __('Curso', 'courses_emp');
+  $new_columns['emp_course'] = __('Curso', 'courses_emp');
 
   return $new_columns;
 }
 
 add_filter('manage_edit-lessons_columns', 'emp_add_lessons_a_columns');
+
+// Create a custom field to select a teacher's course
+function emp_add_lesson_course_metabox(){
+  add_meta_box(
+    'lesson_course',
+    __('Curso', 'teachers_emp'),
+    'emp_lesson_course_metabox',
+    'lessons',
+    'side',
+    'default',
+    array( 'id' => 'emp_course')
+  );
+}
+add_action('admin_init', 'emp_add_lesson_course_metabox');
+
+function emp_lesson_course_metabox($post, $args){
+  wp_nonce_field( plugin_basename( __FILE__ ), 'emp_lesson_course_nonce' );
+  $course_id = get_post_meta($post->ID, '_lesson_course', true);
+
+  echo "<p>Selecciona el curso del cual forma parte esta lección</p>";
+  echo "<select id='emp_lesson_course' name='emp_lesson_course'>";
+
+  echo '<option value="">No incluido</option>';
+
+  // Get teachers
+  $query = new WP_Query( 'post_type=courses' );
+  while ( $query->have_posts() ) {
+    $query->the_post();
+    $id = get_the_ID();
+    $selected = "";
+
+    if($id == $course_id){
+      $selected = ' selected="selected"';
+    }
+    echo '<option' . $selected . ' value=' . $id . '>' . get_the_title() . '</option>';
+  }
+  echo "</select>";
+}
+
+// Save course selected
+function emp_save_lesson_course_metabox($post_id, $post){
+  // Check if autosave is not working
+  if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE )
+  return;
+  if ( !isset( $_POST['emp_lesson_course_nonce'] ) )
+  return;
+  if ( !wp_verify_nonce( $_POST['emp_lesson_course_nonce'], plugin_basename( __FILE__ ) ) )
+  return;
+
+  // We do want to save? Ok!
+  $key = '_lesson_course';
+  $value = $_POST["emp_lesson_course"];
+  if ( get_post_meta( $post->ID, $key, FALSE ) ) { // If the custom field already has a value
+    update_post_meta( $post->ID, $key, $value );
+  } else { // If the custom field doesn't have a value
+    add_post_meta( $post->ID, $key, $value );
+  }
+  if ( !$value ) delete_post_meta( $post->ID, $key ); // Delete if blank
+}
+
+add_action('save_post', 'emp_save_lesson_course_metabox', 1, 2);
 ?>

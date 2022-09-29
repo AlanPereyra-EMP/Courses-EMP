@@ -40,7 +40,7 @@
 }
 #course-topics{
   font-size: 25px;
-	margin-top: 30px
+	margin-top: 50px
 }
 #course-topics .mh-70-vh{
   max-height: 70vh;
@@ -92,7 +92,7 @@
 	padding: 25px 10px;
 	font-size: 15px;
 }
-#course-topics .module li:hover{
+#course-topics .module li:hover, #course-topics .module li.hover{
   background: var(--emp-head-title-bg)!important;
 }
 #course-topics .module li ul{
@@ -109,7 +109,9 @@
   }
 }
 #course-icons{
-	font-size: 22px;
+  display: flex;
+  font-size: 22px;
+  justify-content: space-around;
 }
 #course-icons div{
 	align-items: baseline;
@@ -120,7 +122,7 @@
     display: flex;
 }
 #course-icons p {
-    margin-left: 10px;
+  margin-left: 10px;
 }
 #course-content .autor{
   background: var(--emp-content-color);
@@ -131,6 +133,7 @@
   font-size: 40px;
   margin: 50px 0;
   text-align: center;
+  max-width: none;
 }
 #course-content .autor .content-template{
   display: grid;
@@ -141,6 +144,18 @@
 #course-content .autor .align-text{
   display: block;
   margin: auto;
+}
+.product.woocommerce.add_to_cart_inline{
+  border: none!important;
+  text-align: center;
+  padding: 0!important;
+}
+span.woocommerce-Price-amount.amount{
+  display: block;
+  padding: 10px;
+}
+a.button.add_to_cart_button, a.button.product_type_simple{
+  font-size: 25px!important;
 }
 div#lesson-content {
   padding-top: 1px;
@@ -160,4 +175,26 @@ section.course .card-text.p-3 {
   height: 150px;
   margin-bottom: 20px;
   overflow: auto;
+}
+.container{
+  padding: 10px 30px;
+  border: 1px solid;
+}
+.container.in{
+  /* background: #fff; */
+}
+.container.out{
+  border-top: 0px;
+}
+.draggable{
+  border: 1px solid black;
+  cursor: move;
+  display: block;
+  margin: 10px 0;
+  padding: 1rem;
+  width: 100%;
+}
+.draggable.dragging {
+  opacity: .5;
+  border: 1px dotted black;
 }
