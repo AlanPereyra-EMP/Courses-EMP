@@ -198,3 +198,8 @@ section.course .card-text.p-3 {
   opacity: .5;
   border: 1px dotted black;
 }
+.btn-course-outline-light{
+  background: transparent!important;
+  border: 1px solid!important;
+  color: var(--emp-head-title-color)!important;
+}
