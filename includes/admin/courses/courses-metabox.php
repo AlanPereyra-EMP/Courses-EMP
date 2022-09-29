@@ -232,7 +232,7 @@ function emp_courses_video_metabox($post, $args){
 
   // This is the value that was saved in the save_amenities function
   wp_nonce_field( plugin_basename( __FILE__ ), 'course_video_nonce' );
-  $course_video = get_post_meta( $post_id, '_course_video_a', true );
+  $course_video = get_post_meta( $post_id, '_course_video', true );
 
 
   echo '<label>Pegá el link del video de este curso:</label><br>';
@@ -248,7 +248,7 @@ function emp_save_course_video_metabox($post_id){
   if ( !wp_verify_nonce( $_POST['course_video_nonce'], plugin_basename( __FILE__ ) ) )
   return;
 
-  $key = '_course_video_a';
+  $key = '_course_video';
   $value = $_POST['course_video'];
 
   if ( get_post_meta( $post_id, $key, FALSE ) ) { // If the custom field already has a value
