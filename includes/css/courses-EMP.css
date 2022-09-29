@@ -7,6 +7,9 @@
   margin: auto;
   max-width: 1200px;
 }
+#teacher-intro iframe{
+  background: #000;
+}
 #container-video{
   margin: auto;
   max-width: 1600px;
