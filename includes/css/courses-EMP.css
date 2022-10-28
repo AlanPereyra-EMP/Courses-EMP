@@ -38,6 +38,9 @@
 #teacher-intro button{
   max-width: 600px;
 }
+#course-intro iframe{
+  background: #000000!important;
+}
 #course-intro #course-topics{
 	margin: 70px auto;
 }
