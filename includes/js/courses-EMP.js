@@ -74,9 +74,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }, { offset: Number.NEGATIVE_INFINITY }).element
   }
 
-  console.log(containers);
-  console.log(draggables);
-
   function orderDraggableElements(){
     var nodes = Array.prototype.slice.call( document.getElementById('list').children );
     var hidden = document.getElementById('lessons_container_position');

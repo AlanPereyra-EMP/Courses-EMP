@@ -20,6 +20,7 @@ require_once plugin_dir_path(__FILE__).'/includes/admin/lessons/lessons-post-typ
 require_once plugin_dir_path(__FILE__).'/includes/admin/lessons/lessons-metabox.php';
 require_once plugin_dir_path(__FILE__).'/includes/admin/teachers/teachers-post-type.php';
 // require_once plugin_dir_path(__FILE__).'/includes/admin/teachers/teachers-metabox.php';
+require_once plugin_dir_path(__FILE__).'/includes/shortcode.php';
 require_once plugin_dir_path(__FILE__).'/includes/custom-user-profile.php';
 require_once plugin_dir_path(__FILE__).'/includes/index.php';
 ?>
