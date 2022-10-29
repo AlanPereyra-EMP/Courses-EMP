@@ -129,22 +129,17 @@
 #course-icons p {
   margin-left: 10px;
 }
-#course-content .autor{
-  background: var(--emp-content-color);
-  color: var(--emp-content-bg);
-  padding: 100px 0;
-}
 #course-content .autor-title{
   font-size: 40px;
-  margin: 50px 0;
-  text-align: center;
+  margin: 0;
   max-width: none;
+  padding: 50px 0;
+  text-align: center;
 }
 #course-content .autor .content-template{
-  display: grid;
-  grid-template-columns: 100%;
-  margin: auto;
-  max-width: 1200px;
+  align-items: flex-start;
+  display: flex;
+  padding: 4%;
 }
 #course-content .autor .align-text{
   display: block;
@@ -211,4 +206,10 @@ section.course .card-text.p-3 {
 .emp-courses-sliders{
   width: 33vw;
   margin: 20px;
+}
+@media (max-width: 991px) {
+  .emp-courses-sliders{
+    width: 65vw;
+    margin: 5px;
+  }
 }

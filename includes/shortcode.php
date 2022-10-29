@@ -32,7 +32,7 @@ if(!shortcode_exists('emp_courses')) {
                   </section>';
       endwhile;
 
-      return '<div class="w-100 overflow-auto"><div class="d-flex w-fit-content">'.$courses.'</div></div>';
+      return '<div class="w-100 overflow-auto my-5"><div class="d-flex w-fit-content">'.$courses.'</div></div>';
 
   }
 
