@@ -141,6 +141,10 @@
   display: flex;
   padding: 4%;
 }
+#course-content .autor .content-template a{
+  display: block;
+  max-width: 300px;
+}
 #course-content .autor .align-text{
   display: block;
   margin: auto;
